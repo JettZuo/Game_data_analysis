@@ -17,9 +17,9 @@ library(data.table)
 ```
 
 ```{r, echo=TRUE}
-getwd()
-setwd("D:/cjhwy/taptap")
-tap <- read.csv('/data/taptap_52776.csv', header = TRUE, stringsAsFactors = FALSE)
+#getwd()
+#setwd()
+tap <- read.csv('data/taptap_52776.csv', header = TRUE, stringsAsFactors = FALSE)
 ```
 数据处理并将评分数据汇总：
 
