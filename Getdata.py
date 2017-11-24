@@ -68,7 +68,7 @@ def parsepage(html):
         all_data.append(list)
 
 all_data = []
-num = 100
+num = 300
 for i in range(0,num):
     i = i+1
     url = 'https://www.taptap.com/app/52276/review?order=default&page=' + str(i) + '#review-list'
@@ -76,9 +76,4 @@ for i in range(0,num):
     parsepage(html)
     time.sleep(5)
 data = pd.DataFrame(all_data,columns=['user_name','user_id','web','sex','time','play_time','score','comment','phone','huanle','dianzan','dianxia'])
-data.to_csv('D:\\cjhwy/taptap/taptap_52776.csv',encoding='gb18030',index=False)
-
-#时间处理，分钟小时统一转化为分钟
-#不同星级词云分布
-#用户情感分析
-#男女性别分布、机型分析
+data.to_csv('/data/taptap_52776.csv',encoding='gb18030',index=False)
