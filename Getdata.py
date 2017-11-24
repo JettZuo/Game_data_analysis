@@ -76,4 +76,4 @@ for i in range(0,num):
     parsepage(html)
     time.sleep(5)
 data = pd.DataFrame(all_data,columns=['user_name','user_id','web','sex','time','play_time','score','comment','phone','huanle','dianzan','dianxia'])
-data.to_csv('/data/taptap_52776.csv',encoding='gb18030',index=False)
+data.to_csv('/taptap_52776.csv',encoding='gb18030',index=False)
