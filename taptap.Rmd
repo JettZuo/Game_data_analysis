@@ -19,16 +19,8 @@ library(data.table)
 ```{r, echo=TRUE}
 getwd()
 setwd("D:/cjhwy/taptap")
-tap <- read.csv('taptap_52776.csv', header = TRUE, stringsAsFactors = FALSE)
+tap <- read.csv('/data/taptap_52776.csv', header = TRUE, stringsAsFactors = FALSE)
 ```
-
-查看读取的csv文件。
-
-```{r, echo=TRUE}
-str(tap)
-summary(tap)
-```
-
 数据处理并将评分数据汇总：
 
 ```{r, echo=TRUE}
@@ -42,6 +34,13 @@ tap$dianxia[is.na(tap$dianxia)] <- 0
 #}
 #is.null(tap$play_time[3])
 
+```
+
+查看读取的csv文件。
+
+```{r, echo=TRUE}
+str(tap)
+summary(tap)
 ```
 
 整体星级分布：
