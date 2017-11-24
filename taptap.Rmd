@@ -1,0 +1,97 @@
+---
+title: "TapTapp评论分析"
+output: html_notebook
+---
+
+从tatap上下载获得所有用户数据，存于csv文件。
+现在开始读取用户评论文件，并进行数据处理。
+
+```{r packages, include=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(jiebaR)
+library(stringr)
+library(wordcloud2)
+library(magrittr)
+library(data.table)
+```
+
+```{r, echo=TRUE}
+getwd()
+setwd("D:/cjhwy/taptap")
+tap <- read.csv('taptap_52776.csv', header = TRUE, stringsAsFactors = FALSE)
+```
+
+查看读取的csv文件。
+
+```{r, echo=TRUE}
+str(tap)
+summary(tap)
+```
+
+数据处理并将评分数据汇总：
+
+```{r, echo=TRUE}
+tap$time <- as.POSIXct(tap$time)
+tap$day <- strftime(tap$time, format = '%m-%d')
+tap$huanle[is.na(tap$huanle)] <- 0
+tap$dianzan[is.na(tap$dianzan)] <- 0
+tap$dianxia[is.na(tap$dianxia)] <- 0
+#for(i in 1:length(tap$play_time)){
+#  tap$play_time[i]
+#}
+#is.null(tap$play_time[3])
+
+```
+
+整体星级分布：
+
+```{r, echo=TRUE}
+ggplot(data = tap,aes(x = score))+
+  geom_bar(width = 0.5,fill = 'lightblue') +
+  theme_bw() 
+```
+
+不同性别评分差异：
+
+```{r, echo=TRUE}
+ggplot(data = tap,aes(x = score))+
+  geom_bar(width = 0.5, fill = 'lightblue') +
+  theme_bw() +
+  facet_wrap(~sex,ncol = 1, scales = 'free_y')
+```
+
+日评分变化趋势：
+
+```{r, echo=TRUE}
+ggplot(data = tap,aes(x = day,y= score)) +
+  geom_point(position = position_jitter(h = 0.1, width = 0.2), color = 'blue', alpha=0.2 )
+```
+
+结巴分词，词云制作如下：
+
+```{r, echo=FALSE}
+wk <- worker()
+comments <- as.character("")
+for (i in 1:length(tap$comment))
+  {
+  comments <- paste(comments, tap$comment[i],collapse = " ")
+}
+comment_s <- segment(comments, wk)  #分词
+
+f<-scan(file.choose(),sep="\n", what="")  #读取停止词stop_words_zh.txt
+stopwords<-c(NULL)
+for(i in 1:length(f))
+  {
+  stopwords[i]<-f[i]
+}
+
+all_comments<-filter_segment(comment_s,stopwords)  #去除中文停止词，符号不能识别会报错
+all_comments<-gsub("[3-9a-zA-Z]+?","",all_comments)  #去除数字，停止词一般已去掉
+all_comments<-str_trim(all_comments)   #stringr去除空格，停止词一般已去掉
+
+words<-table(all_comments)%>%data.table()
+setnames(words,"N","pinshu")
+words[pinshu>50]  #查看去除较低频数的词汇
+wordcloud2(words[pinshu>50], size = 2, fontFamily = "微软雅黑",color = "random-light", backgroundColor = "grey")
+```
